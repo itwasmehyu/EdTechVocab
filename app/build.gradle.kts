@@ -39,6 +39,7 @@ android {
 
 dependencies {
     implementation("androidx.glance:glance-appwidget:1.1.0")
+    implementation("androidx.glance:glance-appwidget-proto:1.1.0")
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
 //    implementation(libs.glance.appwidget)

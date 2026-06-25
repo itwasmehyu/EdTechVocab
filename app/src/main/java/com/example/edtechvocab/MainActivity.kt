@@ -1,6 +1,8 @@
 package com.example.edtechvocab
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,7 +32,13 @@ class MainActivity : ComponentActivity() {
                         // Nếu chưa đăng nhập -> Hiện màn hình Login
                         LoginScreen(onLoginSuccess = { newToken ->
                             sharedPreferences.edit().putString("jwt_token", newToken).apply()
-                            // Ép app vẽ lại màn hình sau khi lưu token thành công
+
+                            // GỬI TÍN HIỆU ÉP WIDGET CẬP NHẬT NGAY LẬP TỨC:
+                            val intent = Intent(this, DailyVocabWidgetReceiver::class.java).apply {
+                                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                            }
+                            sendBroadcast(intent)
+
                             recreate()
                         })
                     } else {
