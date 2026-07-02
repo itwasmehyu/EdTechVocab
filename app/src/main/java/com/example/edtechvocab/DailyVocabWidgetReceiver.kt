@@ -42,9 +42,10 @@ class DailyVocabWidgetReceiver : GlanceAppWidgetReceiver() {
                             // Nạp đè dữ liệu SRS thật từ DB Postgres vào bộ nhớ đệm của từng Widget
                             updateAppWidgetState(context, glanceId) { prefs ->
                                 prefs[DailyVocabWidget.KEY_WORD] = vocab.word
-                                prefs[DailyVocabWidget.KEY_POS] = vocab.pos
+                                prefs[DailyVocabWidget.KEY_POS] = vocab.partOfSpeech ?: "adjective"
                                 prefs[DailyVocabWidget.KEY_PHONETIC] = vocab.phonetic
-                                prefs[DailyVocabWidget.KEY_DEFINITION] = vocab.definition
+                                prefs[DailyVocabWidget.KEY_DEFINITION_VI] = vocab.definitionVi
+                                prefs[DailyVocabWidget.KEY_DEFINITION_EN] = vocab.definitionEn
                             }
                             // Ra lệnh cho Widget vẽ lại giao diện mới tức thì
                             glanceAppWidget.update(context, glanceId)

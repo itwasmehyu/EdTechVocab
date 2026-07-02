@@ -17,40 +17,42 @@ import androidx.compose.ui.graphics.Color
 import androidx.glance.currentState
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
 
 class DailyVocabWidget : GlanceAppWidget() {
 
-    // TUYỆT CHIÊU: Xóa hoàn toàn dòng override stateDefinition.
-    // Jetpack Glance sẽ tự động dùng Preferences DATASTORE ngầm định mà không cần gọi tên Class lỗi kia ra nữa.
-
-    // Định nghĩa các Key lưu trữ từ vựng động
     companion object {
         val KEY_WORD = stringPreferencesKey("widget_word")
         val KEY_POS = stringPreferencesKey("widget_pos")
         val KEY_PHONETIC = stringPreferencesKey("widget_phonetic")
-        val KEY_DEFINITION = stringPreferencesKey("widget_definition")
+        val KEY_DEFINITION_VI = stringPreferencesKey("widget_definition_vi")
+        val KEY_DEFINITION_EN = stringPreferencesKey("widget_definition_en")
     }
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
-            // Đọc dữ liệu động được Receiver nạp vào, nếu trống thì hiện chữ mặc định
             val prefs = currentState<Preferences>()
             val word = prefs[KEY_WORD] ?: "Học từ vựng"
             val pos = prefs[KEY_POS] ?: "SRS"
             val phonetic = prefs[KEY_PHONETIC] ?: "Bấm để cập nhật"
-            val definition = prefs[KEY_DEFINITION] ?: "Đăng nhập app để đồng bộ từ vựng hàng ngày theo thuật toán."
+            val definitionVi = prefs[KEY_DEFINITION_VI] ?: "Đăng nhập app để đồng bộ từ vựng hàng ngày theo thuật toán."
+            val definitionEn = prefs[KEY_DEFINITION_EN] ?: "Login to see the definition of today's vocab."
 
-            GlanceWidgetLayout(word, pos, phonetic, definition)
+
+            GlanceWidgetLayout(word, pos, phonetic, definitionVi, definitionEn)
         }
     }
 
     @Composable
-    private fun GlanceWidgetLayout(word: String, pos: String, phonetic: String, definition: String) {
+    private fun GlanceWidgetLayout(word: String, pos: String, phonetic: String, definitionVi: String, definitionEn: String) {
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
                 .padding(12.dp)
-                .background(Color(0xFFEFB8C8)),
+                .background(Color(0xFFEFB8C8))
+                // Gọi thẳng clickable từ GlanceModifier
+                .clickable(actionStartActivity<MainActivity>()),
             verticalAlignment = Alignment.Top,
             horizontalAlignment = Alignment.Start
         ) {
@@ -75,9 +77,15 @@ class DailyVocabWidget : GlanceAppWidget() {
             Spacer(modifier = GlanceModifier.height(4.dp))
 
             Text(
-                text = definition,
-                style = TextStyle(fontSize = 14.sp),
-                modifier = GlanceModifier.padding(top = 6.dp)
+                text = "VI: $definitionVi",
+                style = TextStyle(fontSize = 13.sp),
+                modifier = GlanceModifier.padding(top = 4.dp)
+            )
+
+            Text(
+                text = "EN: $definitionEn",
+                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
+                modifier = GlanceModifier.padding(top = 2.dp)
             )
         }
     }
